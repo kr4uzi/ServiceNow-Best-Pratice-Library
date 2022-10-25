@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ui_page">
+    <sys_ui_page action="INSERT_OR_UPDATE">
+        <category>general</category>
+        <client_script><![CDATA[addLoadEvent(function() {
+	var gdw = GlideDialogWindow.get();
+    var element = document.getElementById('confirm_content');
+    element.innerHTML = gdw.getPreference('content') || "HELLO WORLD";
+});
+
+function execCallback(type) {
+	var gdw = GlideDialogWindow.get();
+	var callback;
+	if (type == 'ok') {
+		callback = gdw.getPreference('onConfirmed');
+	} else if (type == 'cancel') {
+		callback = gdw.getPreference('onCanceled');
+	}
+	
+	if (typeof callback === 'function') {
+		callback.call();
+	}
+	
+	gdw.destroy();
+}]]></client_script>
+        <description/>
+        <direct>false</direct>
+        <endpoint>x_376096_bpl_confirm.do</endpoint>
+        <html><![CDATA[<?xml version="1.0" encoding="utf-8" ?>
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
+	<table border="0" width="100%">
+      <tr>
+         <td nowrap="true" style="vertical-align: top;">
+            <i id="image_dialog" class="icon-check-circle" style="color: #6CE474; font-size: 300%; vertical-align: top;" />
+         </td>
+         <td>
+            <table border="0" width="100%">
+               <tr>
+                  <td id="confirm_content" style="width: 100%; vertical-align: top; min-width: 300px; padding: 0 0 20px 20px;"></td>
+               </tr>
+               <tr style="text-align: right;">
+                  <td style="display: inline; text-align: right; vertical-align:bottom; white-space: nowrap;">
+					  <g:dialog_buttons_ok_cancel ok="return execCallback('ok');" cancel="return execCallback('cancel');" ok_type="button" cancel_type="button" ok_text="${gs.getMessage('Continue')}"/>
+                  </td>
+               </tr>
+            </table>
+         </td>
+      </tr>
+   </table>
+</j:jelly>]]></html>
+        <name>confirm</name>
+        <processing_script/>
+        <sys_class_name>sys_ui_page</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2022-10-16 11:21:37</sys_created_on>
+        <sys_id>32c92902972e1110d545b18e6253af12</sys_id>
+        <sys_name>confirm</sys_name>
+        <sys_package display_value="Best Practice Library" source="x_376096_bpl">53c8084a8702111021d6fcc5dabb35d9</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Best Practice Library">53c8084a8702111021d6fcc5dabb35d9</sys_scope>
+        <sys_update_name>sys_ui_page_32c92902972e1110d545b18e6253af12</sys_update_name>
+    </sys_ui_page>
+</record_update>

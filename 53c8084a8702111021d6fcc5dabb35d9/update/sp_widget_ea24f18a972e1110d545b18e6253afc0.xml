@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller=function($scope, spUtil) {
+	/* global api */
+	/* eslint no-undef: "error" */
+	
+	if (this.data.table && this.data.sys_id) {
+		spUtil.recordWatch($scope, this.data.table, 'sys_id=' + this.data.sys_id);
+	}
+};]]></client_script>
+        <controller_as>c</controller_as>
+        <css/>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description>Example of how to create a UI Formatter which is visible in the portal.&#13;
+SP UI Formatter Configuration: /nav_to.do?uri=sp_ui_formatter.do?sys_id=af14b5ce97ea1110d545b18e6253afab</description>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id/>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {
+  
+}]]></link>
+        <name>SP UI Formatter</name>
+        <option_schema/>
+        <public>false</public>
+        <roles>snc_external,snc_internal</roles>
+        <script><![CDATA[/* global $sp */
+/* global input, options, data */
+/* eslint no-undef: "error" */
+(function(input, options, data) {
+	var recordGr = $sp.getRecord();
+	if (recordGr && recordGr.canRead()) {
+		data.table = recordGr.getTableName();
+		data.sys_id = recordGr.getUniqueValue();
+
+		var nameGe = recordGr.name;
+		if (nameGe && nameGe.canRead()) {
+			data.myVariable = nameGe.toString();
+		}
+	}
+})(input, options, data);]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2022-10-16 12:13:37</sys_created_on>
+        <sys_id>ea24f18a972e1110d545b18e6253afc0</sys_id>
+        <sys_name>SP UI Formatter</sys_name>
+        <sys_package display_value="Best Practice Library" source="x_376096_bpl">53c8084a8702111021d6fcc5dabb35d9</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Best Practice Library">53c8084a8702111021d6fcc5dabb35d9</sys_scope>
+        <sys_update_name>sp_widget_ea24f18a972e1110d545b18e6253afc0</sys_update_name>
+        <template><![CDATA[<p>{{data.myVariable}}</p>]]></template>
+    </sp_widget>
+</record_update>

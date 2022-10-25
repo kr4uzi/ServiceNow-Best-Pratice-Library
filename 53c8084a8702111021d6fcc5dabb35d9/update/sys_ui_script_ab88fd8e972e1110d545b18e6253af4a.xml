@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ui_script">
+    <sys_ui_script action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <description/>
+        <global>false</global>
+        <ignore_in_now_experience>false</ignore_in_now_experience>
+        <name>x_376096_bpl.bpl_scripts</name>
+        <script><![CDATA[var x_376096_bpl = x_376096_bpl || {};
+x_376096_bpl.bpl_scripts = (function() {
+	"use strict";
+	
+	/* global setTimeout */
+	/* eslint no-undef: "error" */
+	if (x_376096_bpl.bpl_scripts) {
+		return x_376096_bpl.bpl_scripts;
+	}
+	
+	// Note: By using setTimeout, we get access to the window object.
+	// The init will execute in the next browser cycle however, this might be too late
+	// for some use-cases. If that's the case, you can must likely just call init with the global
+	// window object (if the script is global=true).
+	setTimeout(function () {
+		init(this);
+	});
+
+	return {
+		type: 'bpl_scripts'
+	};
+	
+	function init($window) {
+		var targetWidget = '5001b062d7101200b0b044580e6103eb'; // widget-data-table
+		var injectedIdentifier = 'bpl-injected';
+		var observer = new $window.MutationObserver(function (mutations) {
+			for (var i = 0; i < mutations.length; i++) {
+				var mutation = mutations[i];
+				if (mutation.addedNodes) {
+					for (var j = 0; j < mutation.addedNodes.length; j++) {
+						var node = mutation.addedNodes[j];
+						if (node.classList && !node.classList.contains(injectedIdentifier) &&
+							node.classList.contains('v' + targetWidget)) {
+							node.classList.add(injectedIdentifier);
+							inject($window, node);
+						}
+					}
+				}
+			}
+		});
+		
+		observer.observe($window.document, {
+			childList: true,
+			subtree: true
+		});
+		
+		var existingNode = $window.document.querySelector('.v' + targetWidget);
+		if (existingNode && !existingNode.classList.contains(injectedIdentifier)) {
+			existingNode.classList.add(injectedIdentifier);
+			inject($window, existingNode);
+		}
+	}
+	
+	function inject($window, node) {
+		// replaceWidgetHTML($window, node);
+	}
+	
+	function replaceWidgetHTML($window, node) {
+		var angular = $window.angular;
+		var element = angular.element(node);
+		
+		var $injector = element.injector.get();
+		var $compile = $injector.get('$compile');
+		
+		var scope = element.scope();
+		scope.widget.template = scope.widget.template
+			.replace('::item[field]', 'item[field]') // disable two-way binding on widget-data-table
+		;
+		
+		element.html(scope.widget.template);
+		$compile(element.contents())(scope);
+	}
+})();
+]]></script>
+        <script_name>bpl_scripts</script_name>
+        <sys_class_name>sys_ui_script</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2022-10-16 12:27:37</sys_created_on>
+        <sys_id>ab88fd8e972e1110d545b18e6253af4a</sys_id>
+        <sys_name>x_376096_bpl.bpl_scripts</sys_name>
+        <sys_package display_value="Best Practice Library" source="x_376096_bpl">53c8084a8702111021d6fcc5dabb35d9</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Best Practice Library">53c8084a8702111021d6fcc5dabb35d9</sys_scope>
+        <sys_update_name>sys_ui_script_ab88fd8e972e1110d545b18e6253af4a</sys_update_name>
+        <ui_type>10</ui_type>
+        <use_scoped_format>true</use_scoped_format>
+    </sys_ui_script>
+</record_update>

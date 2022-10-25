@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sysevent_script_action">
+    <sysevent_script_action action="INSERT_OR_UPDATE">
+        <active>false</active>
+        <condition_script/>
+        <description/>
+        <event_name>approval.inserted</event_name>
+        <name>BPL - Script Action</name>
+        <order>100</order>
+        <script><![CDATA[/* global current, event, x_nsimo_bdi */
+/* eslint no-undef: "error" */
+(function (accountGr, eventGr) {
+
+	// parm1: <undefined>
+	// parm2: <undefined>
+
+})(current, event);]]></script>
+        <synchronous>false</synchronous>
+        <sys_class_name>sysevent_script_action</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2022-10-20 13:53:50</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>2bc23ed797aa5510d545b18e6253af94</sys_id>
+        <sys_name>BPL - Script Action</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="Best Practice Library" source="x_376096_bpl">53c8084a8702111021d6fcc5dabb35d9</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Best Practice Library">53c8084a8702111021d6fcc5dabb35d9</sys_scope>
+        <sys_update_name>sysevent_script_action_2bc23ed797aa5510d545b18e6253af94</sys_update_name>
+    </sysevent_script_action>
+</record_update>

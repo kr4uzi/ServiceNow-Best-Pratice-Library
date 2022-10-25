@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element db_object_id="15c8e1ce97ea1110d545b18e6253af19" label="Scoped Record" max_length="40" name="x_376096_bpl_scoped_record" type="collection">
+        <element label="Name" max_length="40" name="name" type="string"/>
+        <element label="Parent" max_length="32" name="parent" reference="x_376096_bpl_scoped_record" reference_qual="javascript: 'sys_id!=' current.sys_id;" type="reference" use_reference_qualifier="advanced"/>
+        <index name="index">
+            <element name="parent"/>
+        </index>
+    </element>
+</database>

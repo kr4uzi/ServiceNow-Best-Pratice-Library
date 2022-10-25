@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_app_module">
+    <sys_app_module action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <application display_value="Best Pratice Library">76c77d4e972e1110d545b18e6253af8a</application>
+        <assessment/>
+        <device_type/>
+        <filter table="sys_metadata">sys_id=a436a90e97ea1110d545b18e6253afd0^ORsys_id=74335df597ea5110d545b18e6253afae^ORsys_id=2b2ec4e697269110d545b18e6253afb9^ORsys_id=bdae84e697269110d545b18e6253afb9^EQ<item endquery="false" field="sys_id" goto="false" newquery="false" operator="=" or="false" value="a436a90e97ea1110d545b18e6253afd0"/>
+            <item endquery="false" field="sys_id" goto="false" newquery="false" operator="=" or="true" value="74335df597ea5110d545b18e6253afae"/>
+            <item endquery="false" field="sys_id" goto="false" newquery="false" operator="=" or="true" value="2b2ec4e697269110d545b18e6253afb9"/>
+            <item endquery="false" field="sys_id" goto="false" newquery="false" operator="=" or="true" value="bdae84e697269110d545b18e6253afb9"/>
+            <item endquery="true" field="" goto="false" newquery="false" operator="=" or="false" value=""/>
+        </filter>
+        <hint/>
+        <homepage/>
+        <image/>
+        <link_type>LIST</link_type>
+        <map_page/>
+        <mobile_title>Client Scripts</mobile_title>
+        <mobile_view_name>Mobile</mobile_view_name>
+        <name>sys_metadata</name>
+        <order>1000</order>
+        <override_menu_roles>false</override_menu_roles>
+        <query/>
+        <report/>
+        <roles>admin</roles>
+        <sys_class_name>sys_app_module</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2022-10-16 12:23:13</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>76d7bd4e972e1110d545b18e6253afcc</sys_id>
+        <sys_name>Client Scripts</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="Best Practice Library" source="x_376096_bpl">53c8084a8702111021d6fcc5dabb35d9</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Best Practice Library">53c8084a8702111021d6fcc5dabb35d9</sys_scope>
+        <sys_update_name>sys_app_module_76d7bd4e972e1110d545b18e6253afcc</sys_update_name>
+        <timeline_page/>
+        <title>Client Scripts</title>
+        <uncancelable>false</uncancelable>
+        <view_name/>
+        <window_name/>
+    </sys_app_module>
+</record_update>

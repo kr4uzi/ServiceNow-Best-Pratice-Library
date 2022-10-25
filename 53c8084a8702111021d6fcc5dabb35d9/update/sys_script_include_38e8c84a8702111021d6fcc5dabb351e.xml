@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_376096_bpl.Integration</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>Integration</name>
+        <script><![CDATA[/* global global, gs, sn_ws, sn_cc */
+/* global Class, GlideRecord */
+/* eslint no-undef: "error" */
+var Integration = Class.create();
+Integration.prototype = {
+    initialize: function initialize(connectionAliasSysID, connectionURL) {
+		this.logPrefix = '[' + this.type + ']';
+		this.connection_url = connectionURL;
+		
+		try {
+            var provider = new sn_cc.ConnectionInfoProvider();
+            var connectionInfo = provider.getConnectionInfo(connectionAliasSysID);
+            if (connectionInfo != null) {
+				this.connection = {
+					user_name: connectionInfo.getCredentialAttribute('user_name'),
+					password: connectionInfo.getCredentialAttribute('password'),
+					api_key: connectionInfo.getCredentialAttribute('api_key'),
+					connection_url: connectionInfo.getAttribute('connection_url'),
+					connection_timeout: connectionInfo.getAttribute('connection_timeout')
+				};
+				
+				var httpConnGr = new GlideRecord('http_connection');
+				httpConnGr.addQuery('sys_id', connectionInfo.getAttribute('sys_id'));
+				httpConnGr.query();
+				if (httpConnGr.next()) {
+				
+					if (connectionInfo.getAttribute('mutual_auth') === true) {
+						this.connection.mutual_auth_profile = httpConnGr.getValue('protocol_profile');
+
+						if (!this.connection.mutual_auth_profile) {
+							this._throwError('Mutual authentication requires a Protocol profile!');
+						}
+					}
+
+					if (connectionInfo.getAttribute('use_mid') === true) {
+						var midSelection = connectionInfo.getAttribute('mid_selection');
+						if (midSelection == 'auto_select') {
+							var capabilities = [];
+							var capabilityGr = new GlideRecord('ecc_agent_capability');
+							capabilityGr.addQuery('sys_id', 'IN', httpConnGr.capabilities);
+							capabilityGr.query();
+							while (capabilityGr.next()) {
+								capabilities.push(capabilityGr.capability.toString());
+							}
+
+							capabilities = capabilities.join(',');
+							var application = httpConnGr.application.toString();
+
+							var selector = new global.MIDServerSelector();
+							selector.setCapabilities(capabilities);
+
+							this.mid_server = selector.findAgent();
+						} else if (midSelection == 'specific_mid_server') {
+							this.mid_server = httpConnGr.getValue('mid_server');
+						} else if (midSelection == 'specific_mid_cluster') {
+							this._throwError('Not implemented!');
+						}
+
+						if (!this.mid_server) {
+							this._throwError('No MID Server found!');
+						}
+					}
+				} else {
+					this._throwError('Invalid HTTP Connection!');
+				}
+            } else {
+                this._throwError('No Connection provided');
+            }
+		} catch (e) {
+			var errorMessage = this.logPrefix + '[initialize]';
+			
+			if (this._thrown_error) {
+				errorMessage += this._thrown_error + '\n';
+				
+				// remove last line which will always be from _throwError
+				errorMessage += e.stack.split('\n').slice(1).join('\n');
+			} else if (e.stack) {
+				errorMessage += '\n' + e.stack;
+			} else {
+				errorMessage += e;
+			}
+			
+			gs.error(errorMessage);
+
+			// load connection is fatal! if no valid connection could be loaded the script include cannot initialize
+			throw e;
+		}
+    },
+	
+	executeSOAP: function () {
+		var message = new sn_ws.SOAPMessageV2('SOAPMESSAGE', 'SOAPFUNCTION');
+		if (this.connection.mutual_auth_profile) {
+			message.setMutualAuth(this.connection.mutual_auth_profile);
+		}
+		
+		if (this.connection.mid_server) {
+			message.setMIDServer(this.connection.mid_server);
+		}
+		
+		if (this.connection.user_name && this.connection.password) {
+			message.setBasicAuth(this.connection.user_name, this.connection.password);
+		}
+		
+		if (this.connection.connection_timeout) {
+			message.setHttpTimeout(this.connection.connection_timeout);
+		}
+
+		message.setEndpoint(
+            message
+                .getEndpoint()
+                .replace(new RegExp('^' + this.connection_url), this.connection.connection_url)
+        );
+	},
+	
+	// this function allows to thrown an error and access the call-stack
+	_throwError: function _throwError(error) {
+		this._thrown_error = error;
+		__integration_error__with__stack__; // eslint-disable-line
+	},
+
+    type: 'Integration'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2022-09-21 10:33:29</sys_created_on>
+        <sys_id>38e8c84a8702111021d6fcc5dabb351e</sys_id>
+        <sys_name>Integration</sys_name>
+        <sys_package display_value="Best Practice Library" source="x_376096_bpl">53c8084a8702111021d6fcc5dabb35d9</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="Best Practice Library">53c8084a8702111021d6fcc5dabb35d9</sys_scope>
+        <sys_update_name>sys_script_include_38e8c84a8702111021d6fcc5dabb351e</sys_update_name>
+    </sys_script_include>
+</record_update>

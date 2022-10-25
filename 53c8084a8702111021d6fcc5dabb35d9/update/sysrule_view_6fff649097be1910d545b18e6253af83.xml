@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sysrule_view">
+    <sysrule_view action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <advanced>true</advanced>
+        <condition/>
+        <description/>
+        <device_type>browser</device_type>
+        <match_conditions>ALL</match_conditions>
+        <name>BPL - View Rule</name>
+        <order>100</order>
+        <overrides_user_preference>true</overrides_user_preference>
+        <script><![CDATA[/* global view, is_list, answer */
+/* global gs */
+/* global GlideRecord */
+/* eslint no-undef: "error" */
+(function overrideView(view, is_list) {
+	
+	if (gs.hasRole('admin')) {
+		answer = view;
+	}
+	
+	// https://support.servicenow.com/kb?id=kb_article_view&sysparm_article=KB0647812
+	
+	var url = gs.action.getGlideURI();
+	var sysID = url.get('sys_id');
+	
+	var demoGr = new GlideRecord('x_376096_bpl_scoped_record');
+	demoGr.addQuery('sys_id', sysID);
+	demoGr.setLimit(1);
+	demoGr.query();
+	if (demoGr.next()) {
+		if (demoGr.view == 'view1') {
+			answer = 'view1';
+		}
+	}
+
+})(view, is_list);]]></script>
+        <sys_class_name>sysrule_view</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2022-10-23 09:41:57</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>6fff649097be1910d545b18e6253af83</sys_id>
+        <sys_name>BPL - View Rule</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="Best Practice Library" source="x_376096_bpl">53c8084a8702111021d6fcc5dabb35d9</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Best Practice Library">53c8084a8702111021d6fcc5dabb35d9</sys_scope>
+        <sys_update_name>sysrule_view_6fff649097be1910d545b18e6253af83</sys_update_name>
+        <table>x_376096_bpl_scoped_record</table>
+        <view/>
+    </sysrule_view>
+</record_update>

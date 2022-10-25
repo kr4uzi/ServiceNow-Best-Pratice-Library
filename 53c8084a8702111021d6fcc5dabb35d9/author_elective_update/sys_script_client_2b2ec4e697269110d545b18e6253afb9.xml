@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_script_client">
+    <sys_script_client action="DELETE">
+        <active>true</active>
+        <applies_extended>false</applies_extended>
+        <condition/>
+        <description/>
+        <field>date_field</field>
+        <global>true</global>
+        <isolate_script>true</isolate_script>
+        <messages/>
+        <name>BPL - snDate to jsDate</name>
+        <order/>
+        <script><![CDATA[function onChange(control, oldValue, newValue, isLoading, isTemplate) {
+   if (isLoading || newValue === '') {
+      return;
+   }
+
+	var timestamp = getDateFromFormat(newValue, g_user_date_format);
+	var date = new Date(timestamp);
+	var newSNDate = formatDate(date, g_user_date_format);
+	
+	g_form.showFieldMsg('date_field', 'JS Date: ' + date + ', SN Date: ' + newSNDate, 'info');
+}]]></script>
+        <sys_class_name>sys_script_client</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2022-10-17 17:59:37</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>2b2ec4e697269110d545b18e6253afb9</sys_id>
+        <sys_mod_count>3</sys_mod_count>
+        <sys_name>BPL - snDate to jsDate</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="Best Practice Library" source="x_376096_bpl">53c8084a8702111021d6fcc5dabb35d9</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Best Practice Library">53c8084a8702111021d6fcc5dabb35d9</sys_scope>
+        <sys_update_name>sys_script_client_2b2ec4e697269110d545b18e6253afb9</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2022-10-17 18:16:00</sys_updated_on>
+        <table>x_376096_bpl_demo_table</table>
+        <type>onChange</type>
+        <ui_type>0</ui_type>
+        <view/>
+    </sys_script_client>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="Best Practice Library">53c8084a8702111021d6fcc5dabb35d9</application>
+        <file_path/>
+        <instance_id>2ca27526dbf6491042b321c405961935</instance_id>
+        <instance_name>dev126060</instance_name>
+        <name>sys_script_client_2b2ec4e697269110d545b18e6253afb9</name>
+        <payload>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;record_update sys_domain="global" table="sys_script_client"&gt;&lt;sys_script_client action="INSERT_OR_UPDATE"&gt;&lt;active&gt;true&lt;/active&gt;&lt;applies_extended&gt;false&lt;/applies_extended&gt;&lt;condition/&gt;&lt;description/&gt;&lt;field&gt;date_field&lt;/field&gt;&lt;global&gt;true&lt;/global&gt;&lt;isolate_script&gt;true&lt;/isolate_script&gt;&lt;messages/&gt;&lt;name&gt;BPL - snDate to jsDate&lt;/name&gt;&lt;order/&gt;&lt;script&gt;&lt;![CDATA[function onChange(control, oldValue, newValue, isLoading, isTemplate) {
+   if (isLoading || newValue === '') {
+      return;
+   }
+
+	var timestamp = getDateFromFormat(newValue, g_user_date_format);
+	var date = new Date(timestamp);
+	var newSNDate = formatDate(date, g_user_date_format);
+	
+	g_form.showFieldMsg('date_field', 'JS Date: ' + date + ', SN Date: ' + newSNDate, 'info');
+}]]&gt;&lt;/script&gt;&lt;sys_class_name&gt;sys_script_client&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2022-10-17 17:59:37&lt;/sys_created_on&gt;&lt;sys_domain&gt;global&lt;/sys_domain&gt;&lt;sys_domain_path&gt;/&lt;/sys_domain_path&gt;&lt;sys_id&gt;2b2ec4e697269110d545b18e6253afb9&lt;/sys_id&gt;&lt;sys_mod_count&gt;3&lt;/sys_mod_count&gt;&lt;sys_name&gt;BPL - snDate to jsDate&lt;/sys_name&gt;&lt;sys_overrides/&gt;&lt;sys_package display_value="Best Practice Library" source="x_376096_bpl"&gt;53c8084a8702111021d6fcc5dabb35d9&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value="Best Practice Library"&gt;53c8084a8702111021d6fcc5dabb35d9&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_script_client_2b2ec4e697269110d545b18e6253afb9&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2022-10-17 18:16:00&lt;/sys_updated_on&gt;&lt;table&gt;x_376096_bpl_demo_table&lt;/table&gt;&lt;type&gt;onChange&lt;/type&gt;&lt;ui_type&gt;0&lt;/ui_type&gt;&lt;view/&gt;&lt;/sys_script_client&gt;&lt;/record_update&gt;</payload>
+        <payload_hash>400142556</payload_hash>
+        <record_name>BPL - snDate to jsDate</record_name>
+        <reverted_from/>
+        <source>13c8084a8702111021d6fcc5dabb35db</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2022-10-17 18:16:00</sys_created_on>
+        <sys_id>ff4254ea97269110d545b18e6253af01</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>183e728e5490000001</sys_recorded_at>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2022-10-17 18:16:00</sys_updated_on>
+        <type>Client Script</type>
+        <update_guid>3b4254eaeb269110e60cacb08f503901</update_guid>
+        <update_guid_history>3b4254eaeb269110e60cacb08f503901:400142556,e73214ea2826911001cf06db3f8267e6:1361436810,9d2294ea8a269110f3f1778d850266b8:-1033207697,b78e40e6b5269110a16ed74f6b905618:1100746374</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete/>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2022-10-25 05:12:11</sys_created_on>
+        <sys_db_object display_value="" name="sys_script_client">sys_script_client</sys_db_object>
+        <sys_id>1069341ebfc248cc83e38d8626136b69</sys_id>
+        <sys_metadata>2b2ec4e697269110d545b18e6253afb9</sys_metadata>
+        <sys_name>BPL - snDate to jsDate</sys_name>
+        <sys_package display_value="Best Practice Library" source="x_376096_bpl">53c8084a8702111021d6fcc5dabb35d9</sys_package>
+        <sys_parent display_value="">4456f10e972e1110d545b18e6253af16</sys_parent>
+        <sys_policy/>
+        <sys_scope display_value="Best Practice Library">53c8084a8702111021d6fcc5dabb35d9</sys_scope>
+        <sys_scope_delete display_value="">0853fa541e824e518183cbc4cbdb3451</sys_scope_delete>
+        <sys_update_name>sys_script_client_2b2ec4e697269110d545b18e6253afb9</sys_update_name>
+        <sys_update_version display_value="sys_script_client_2b2ec4e697269110d545b18e6253afb9">ff4254ea97269110d545b18e6253af01</sys_update_version>
+    </sys_metadata_delete>
+</record_update>
