@@ -67,6 +67,7 @@ function onClick(g_form) {
 
 }]]></x_376096_pxp_client_script>
         <x_376096_pxp_enabled>false</x_376096_pxp_enabled>
+        <x_376096_pxp_list_disabled_condition/>
         <x_376096_pxp_list_label/>
     </sys_ui_action>
 </record_update>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_376096_bpl.MetadataUtil</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>MetadataUtil</name>
+        <script><![CDATA[/* global Class */
+/* global gs */
+/* global GlideRecord */
+/* eslint no-undef: "error" */
+var MetadataUtil = Class.create();
+MetadataUtil.prototype = {
+    
+	initialize: function() {
+		// this is the out of the box 'Version' relationship SysID (sys_relationship record)
+		this.ootbVersionRelationshipSysID = '67bdac52374010008687ddb1967334ee';
+    },
+	
+	shouldDisplayShowVersionUIAction: function (metadataGr, action) {
+		// only display the 'Show Versions' UI Action if there current user is an admin ...
+		if (gs.hasRole('admin')) {
+			// ... and if there the 'Versions' Related List isn't already on the current view
+			var view = action.getGlideURI().get('sysparm_view') || '';
+			var table = metadataGr.getRecordClassName();
+			
+			var relatedListEntryGr = new GlideRecord('sys_ui_related_list_entry');
+			relatedListEntryGr.addQuery('related_list', 'REL:' + this.ootbVersionRelationshipSysID);
+			relatedListEntryGr.addQuery('list_id.name', table);
+			relatedListEntryGr.addQuery('list_id.view.name', view);
+			relatedListEntryGr.setLimit(1);
+			relatedListEntryGr.query();
+			if (!relatedListEntryGr.hasNext()) {
+				return true;
+			}
+		}
+		
+		return false;
+	},
+
+    type: 'MetadataUtil'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2022-10-28 15:04:34</sys_created_on>
+        <sys_id>32af008e97f2dd10d545b18e6253afcf</sys_id>
+        <sys_name>MetadataUtil</sys_name>
+        <sys_package display_value="Best Practice Library" source="x_376096_bpl">53c8084a8702111021d6fcc5dabb35d9</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="Best Practice Library">53c8084a8702111021d6fcc5dabb35d9</sys_scope>
+        <sys_update_name>sys_script_include_32af008e97f2dd10d545b18e6253afcf</sys_update_name>
+    </sys_script_include>
+</record_update>

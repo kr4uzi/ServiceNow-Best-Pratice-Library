@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?><database>
     <element db_object_id="15c8e1ce97ea1110d545b18e6253af19" label="Scoped Record" max_length="40" name="x_376096_bpl_scoped_record" type="collection">
+        <element attributes="condition_builder=v2,show_condition_count=true" dependent="conditions_table" dependent_on_field="conditions_table" hint="This field has a dependency configured on 'Conditions Table' and has the following attributes: condition_builder=v2,show_condition_count=true" label="Conditions" max_length="4000" name="conditions" type="conditions" use_dependent_field="true"/>
+        <element label="Conditions Table" max_length="80" name="conditions_table" type="table_name"/>
         <element label="Name" max_length="40" name="name" type="string"/>
-        <element label="Parent" max_length="32" name="parent" reference="x_376096_bpl_scoped_record" reference_qual="javascript: 'sys_id!=' current.sys_id;" type="reference" use_reference_qualifier="advanced"/>
+        <element attributes="edge_encryption_enabled=true,encode_utf8=false" label="Parent" max_length="32" name="parent" reference="x_376096_bpl_scoped_record" reference_qual="javascript: 'sys_id!=' + current.sys_id;" type="reference" use_reference_qualifier="advanced"/>
         <index name="index">
             <element name="parent"/>
         </index>

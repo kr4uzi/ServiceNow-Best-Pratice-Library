@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="syntax_editor_macro">
+    <syntax_editor_macro action="INSERT_OR_UPDATE">
+        <comments/>
+        <name>bpl_ga</name>
+        <sys_class_name>syntax_editor_macro</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2022-11-12 10:09:19</sys_created_on>
+        <sys_id>044c143697075190d545b18e6253afc2</sys_id>
+        <sys_name>bpl_ga</sys_name>
+        <sys_package display_value="Best Practice Library" source="x_376096_bpl">53c8084a8702111021d6fcc5dabb35d9</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Best Practice Library">53c8084a8702111021d6fcc5dabb35d9</sys_scope>
+        <sys_update_name>syntax_editor_macro_044c143697075190d545b18e6253afc2</sys_update_name>
+        <text>var ga = new GlideAjax('MYSCRIPTINCLUDE');&#13;
+ga.addParam('sysparm_name', 'MYFUNC');&#13;
+ga.addParam('MYPARAM', g_form.getValue('MYFIELD'));&#13;
+ga.getXMLAnswer(function (answer) {&#13;
+	try {&#13;
+		var result = JSON.parse(answer);&#13;
+		if (result.status == 'success') {&#13;
+			// success path	&#13;
+		} else {&#13;
+			throw new Error(result.message);&#13;
+		}&#13;
+	} catch (e) {&#13;
+		jsLog('GlideAjax Answer: ' + answer + '\nException: ' + e);&#13;
+&#13;
+		if (g_user.hasRole('admin')) {&#13;
+			g_form.addErrorMessage(e.message);&#13;
+		}&#13;
+	}&#13;
+});</text>
+    </syntax_editor_macro>
+</record_update>

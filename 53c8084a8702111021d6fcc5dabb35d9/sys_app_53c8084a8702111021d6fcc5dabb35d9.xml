@@ -13,7 +13,7 @@
         <license_definition/>
         <license_model>none</license_model>
         <logo/>
-        <menu/>
+        <menu display_value="Best Pratice Library">76c77d4e972e1110d545b18e6253af8a</menu>
         <name>Best Practice Library</name>
         <private>false</private>
         <restrict_table_access>false</restrict_table_access>
@@ -32,7 +32,7 @@
         <template/>
         <trackable>true</trackable>
         <uninstall_blocked>false</uninstall_blocked>
-        <user_role/>
+        <user_role display_value="x_376096_bpl.reader" name="x_376096_bpl.reader">94da50f297075190d545b18e6253af07</user_role>
         <vendor/>
         <vendor_prefix/>
         <version>1.0.0</version>

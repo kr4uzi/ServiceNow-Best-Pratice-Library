@@ -19,28 +19,139 @@
         <sys_update_name>sys_ui_macro_9b796102972e1110d545b18e6253afa4</sys_update_name>
         <xml><![CDATA[<?xml version="1.0" encoding="utf-8" ?>
 <j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
-	<j2:if test="$[!current.isNewRecord()]">
-		<div id='${ref}'>Record watcher: $[current.name.toString()]</div>
-		<script>
-			addLoadEvent(function () {		
-				var ambClient = window.g_ambClient || window.top.g_ambClient;
-				var table = '$[current.getTableName()]';
-				var sys_id = '$[current.getUniqueValue()]';
+	<g2:evaluate>
+		var cssRef = '${ref}'.replace(/\./g, '\\.');
+		var scopedRecordGr = new GlideRecordSecure('x_376096_bpl_scoped_record');
+		scopedRecordGr.addQuery('sys_id', '!=', current.getUniqueValue());
+		scopedRecordGr.setLimit(10);
+		scopedRecordGr.orderByDesc('sys_created_on');
+		scopedRecordGr.query();
+		
+		var scopedRecords = [];
+		while (scopedRecordGr.next()) {
+			scopedRecords.push({
+				sys_id: scopedRecordGr.getUniqueValue(),
+				name: scopedRecordGr.name.toString(),
+				parent: scopedRecordGr.getDisplayValue('parent'),
+				conditions_table: scopedRecordGr.getDisplayValue('conditions_table'),
+				conditions: scopedRecordGr.conditions.toString()
+			});
+		}
+	</g2:evaluate>
+	<style>
+		#$[cssRef]_description {
+			margin-top: 1rem;
+			margin-left: 25rem;
+		}
+		
+		#$[cssRef]_record_table {
+			width: 100rem;
+			margin-left: 25rem;
+			margin-bottom: 2rem;
+		}
+	</style>
+	<p id='${ref}_description'>This is a UI Formatter demonstrates a record watcher implementation inside the Classic UI.</p>
+    <table id='${ref}_record_table'>
+        <thead>
+			<tr>
+				<th width="15rem">Name</th>
+				<th width="15rem">Parent</th>
+				<th width="20rem">Conditions Table</th>
+				<th width="50rem">Conditions</th>
+			</tr>
+        </thead>
+        <tbody>
+            <j2:forEach var="jvar_record" items="$[scopedRecords]">     
+                <tr data-record-sys-id="$[jvar_record.sys_id]">
+                    <td data-record-field="name">$[jvar_record.name]</td>
+                    <td data-record-field="parent">$[jvar_record.parent]</td>
+                    <td data-record-field="conditions_table">$[jvar_record.conditions_table]</td>
+                    <td data-record-field="conditions">$[jvar_record.conditions]</td>
+                </tr>
+            </j2:forEach>
+        </tbody>
+        <tfoot style="display: $[scopedRecords.length ? 'none' : 'block'];">
+            <tr>
+                <td colspan="4">No other records in this table.</td>
+            </tr>
+        </tfoot>
+    </table>
 
-				var watcherChannel = ambClient.getChannel('/rw/default/' + table + '/' + getFilterString('sys_id=' + sys_id));
-				watcherChannel.subscribe(function(message) {
-					if (message.data.operation === "update" $[AMP]$[AMP] message.data.changes.indexOf('name') > -1) {
-						window.document.getElementById('${ref}').innerHTML = 'Record watcher: ' + message.data.record.name.value;
+	<script>
+	(function () {
+		'use strict';
+		
+		addLoadEvent(function () {		
+			var watchedTable = '$[current.getTableName()]';
+			var watchedFilter = 'sys_id!=$[current.getUniqueValue()]';
+			var watchedFields = ['name', 'parent', 'conditions_table', 'conditions'];
+		
+			var table = window.document.getElementById('${ref}_record_table');
+			var watcherChannel = getChannelRW(watchedTable, watchedFilter);
+			watcherChannel.subscribe(function(message) {
+				var tbody = table.querySelector('tbody');
+				var tfoot = table.querySelector('tfoot');
+				var rowSelector = 'tr[data-record-sys-id="' + message.data.sys_id + '"]';
+
+				if (message.data.operation == 'update') {
+					var changedFields = message.data.changes.filter(function (f) {
+						return watchedFields.indexOf(f) != -1;
+					});
+
+					if (changedFields.length) {
+						var updateRow = tbody.querySelector(rowSelector);
+						changedFields.forEach(function (field) {
+							var cellSelector = 'td[data-record-field="' + field + '"]';
+							var cell = updateRow.querySelector(cellSelector);
+							cell.innerHTML = message.data.record[field].display_value;
+						});
 					}
-				});
+				} else if (message.data.operation == 'insert') {
+					var newRow = tbody.querySelector(rowSelector);
+					if (newRow == null) {
+						newRow = tbody.insertRow(0);
+						newRow.setAttribute('data-record-sys-id', message.data.sys_id);
 
-				function getFilterString(filter) {
-					filter = filter.replace(/\^EQ/g, '').replace(/\^ORDERBY(?:DESC)?[^^]*/g, '').replace(/^GOTO/, '');
-					return btoa(unescape(encodeURIComponent(filter))).replace(/=/g, '-');
+						watchedFields.forEach(function (field) {
+							var newCell = newRow.insertCell();
+							newCell.setAttribute('data-record-field', field);
+							if (field in message.data.record) {
+								newCell.innerHTML = message.data.record[field].display_value;
+							}
+						});
+					}
+				} else if (message.data.operation == 'delete') {
+					var deleteRow = tbody.querySelector(rowSelector);
+					if (deleteRow) {
+						deleteRow.remove();
+					}
+				}
+		
+				if (tbody.rows.length == 0) {
+					tfoot.style.display = '';
+				} else {
+					tfoot.style.display = 'none';
 				}
 			});
-		</script>
-	</j2:if>
+		});
+
+		// the following functions are taken/inspired by the 'amb' service ('ng.amb' module)
+		// source code: /scripts/app.ng.amb/service.AMB.js
+		function getFilterString(filter) {
+			filter = filter.
+				replace(/\^EQ/g, '').
+				replace(/\^ORDERBY(?:DESC)?[^^]*/g, '').
+				replace(/^GOTO/, '');
+				return btoa(unescape(encodeURIComponent(filter))).replace(/=/g, '-');
+		}
+
+		function getChannelRW(table, filter) {
+			var ambClient = window.g_ambClient || window.top.g_ambClient;
+			var t = '/rw/default/' + table + '/' + getFilterString(filter);
+			return ambClient.getChannel(t);
+		}
+	})();
+	</script>
 </j:jelly>]]></xml>
     </sys_ui_macro>
 </record_update>

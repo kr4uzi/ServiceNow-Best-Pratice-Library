@@ -17,6 +17,9 @@ ScriptIncludeClient.prototype = Object.extendsObject(global.AbstractAjaxProcesso
 	
 	initialize: function(request, responseXML, gc) {
         global.AbstractAjaxProcessor.prototype.initialize.apply(this, arguments);
+		
+		// initialize the non-client callable script include like this:
+		// this.si = new ScriptInclude();
     },
 	
 	getRecord: function () {
@@ -25,48 +28,40 @@ ScriptIncludeClient.prototype = Object.extendsObject(global.AbstractAjaxProcesso
 			message: ''
 		};
 		
-		var recordTable = this.getParameter('record_table');
-		var recordSysID = this.getParameter('record_sys_id');
-		if (recordTable && recordSysID) {
-			var recordGr = new GlideRecordSecure(recordTable);
-			recordGr.addQuery('sys_id', recordSysID);
-			recordGr.setLimit(1);
-			recordGr.query();
-			if (recordGr.next()) {
-				result.record = {
-					display_value: recordGr.getDisplayValue()
-				};
+		try {
+			var recordTable = this.getParameter('record_table');
+			var recordSysID = this.getParameter('record_sys_id');
+			if (recordTable && recordSysID) {
+				var recordGr = new GlideRecordSecure(recordTable);
+				recordGr.addQuery('sys_id', recordSysID);
+				recordGr.setLimit(1);
+				recordGr.query();
+				if (recordGr.next()) {
+					result.record = {
+						display_value: recordGr.getDisplayValue()
+					};
+					
+					result.status = 'success';
+				} else {
+					result.error_message = gs.getMessage('x_376096_bpl_insufficient_privileges');
+				}
 			} else {
-				result.error_message = gs.getMessage('insufficient privileges to perform this action');
+				result.error_message = gs.getMessage('x_376096_bpl_invalid_parameters');
 			}
-		} else {
-			result.error_message = gs.getMessage('Invalid Parameters!');
-		}
-		
-		return JSON.stringify(result);
-	},
-	
-	validateIncident: function () {
-		var result = {
-			status: 'error',
-			message: ''
-		};
+		} catch (e) {
+			var errorMessage = '';
+			if (e) {
+				errorMessage += 'e';
 
-		var incidentSysID = this.getParameter('incident');
-		if (incidentSysID) {
-			var recordGr = new GlideRecordSecure('incident');
-			recordGr.addQuery('sys_id', incidentSysID);
-			recordGr.setLimit(1);
-			recordGr.query();
-			if (recordGr.next()) {
-				// we would not call a Server Side Script Include which so that we have all the validation in one place
-				// security is now critical: The Server Side Script Include should not do any writes, or violate data privacy
-				result.valid = true;
-			} else {
-				result.error_message = gs.getMessage('insufficient privileges to perform this action');
+				if (e.stack) {
+					errorMessage += '\n' + e.stack;
+				}
 			}
-		} else {
-			result.error_message = gs.getMessage('Invalid Parameters!');
+			
+			gs.error('[' + this.type + '] getRecord: ' + errorMessage);
+			if (gs.hasRole('admin')) {
+				result.message = errorMessage;
+			}
 		}
 		
 		return JSON.stringify(result);

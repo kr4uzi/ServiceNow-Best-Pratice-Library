@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ui_script">
+    <sys_ui_script action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <description>Note: For each Widget in 'targetWidgets' a new Widget Dependency to 'BPL Catalog Item' has to be added (this can be done in a scope - open the related list in a new tab to be table to do that).&#13;
+After this you use the following script to use Catalog Items in a PopUp:&#13;
+&#13;
+i18n.getMessage('My Custom Title', function (translatedTitle) {&#13;
+	spModal.open({&#13;
+			'title': translatedTitle,&#13;
+			'widget': 'widget-sc-cat-item-v2',&#13;
+			'widgetInput': {&#13;
+				'sys_id': 'CATALOG ITEM SYS ID' // this is the catalog item sys_id&#13;
+			},&#13;
+			'backdrop': 'static', // don't close the modal if clicked outside,&#13;
+			'keyboard': false, // ESC key should not close the modal&#13;
+			'size': 'lg', // without this, the popup isn't even large enough for one column&#13;
+			'buttons': [], // do not show the OOTB OK + Cancel Button&#13;
+			'footerStyle': {&#13;
+				'display': 'none' // hide the Button panel&#13;
+			},&#13;
+			'shared': { // this is used to communicate with the catalog widget&#13;
+				'pxp_options': {&#13;
+					'auto_redirect': false,&#13;
+					'hide_title': true,&#13;
+					'fields': {&#13;
+						'comments': 'THIS IS IS THE INCIDENT COMMENT'&#13;
+					},&#13;
+					'afterSubmit': function (g_form, closeModal, $data) {&#13;
+						closeModal();&#13;
+&#13;
+						// do not show dirty form warning after the popup is closed&#13;
+						g_dirty_form_warning_enabled = false; // eslint-disable-line&#13;
+&#13;
+						// do the redirect manually&#13;
+						$location.search({&#13;
+							id: 'ticket',&#13;
+							table: 'incident',&#13;
+							sys_id: $data.sys_id&#13;
+						});&#13;
+					},&#13;
+					'onLoad': function (g_form, closeModal) {&#13;
+						g_form.addInfoMessage('OnLoad from BPL');&#13;
+						g_form.setValue('comments', g_form.getValue('comments') + '\nTHIS LINE WAS ADDED AFTER LOAD');&#13;
+					}&#13;
+				}&#13;
+			}&#13;
+		});&#13;
+	});&#13;
+});</description>
+        <global>false</global>
+        <ignore_in_now_experience>false</ignore_in_now_experience>
+        <name>x_376096_bpl.catalog_item_inject</name>
+        <script><![CDATA[var x_376096_bpl = x_376096_bpl || {};
+
+x_376096_bpl.catalog_item_inject = (function() {
+	"use strict";
+	/* global setTimeout, MutationObserver */
+	/* eslint no-undef: "error" */
+	
+	if (x_376096_bpl.catalog_item_inject) {
+		return x_376096_bpl.catalog_item_inject;
+	}
+	
+	var targetWidgets = [
+		// '<Sys ID of Target Widget>', // [widget-id] <Target Widget Name> (<used page>)
+		'3c29786e87133200e0ef0cf888cb0bdf', // [widget-sc-cat-item-v2] SC Catalog Item (sc_cat_item)
+		'0fd6a6f247230200ba13a5554ee490b3', // [widget-sc-cat-item] SC Catalog Item Deprecated
+	];
+	
+	setTimeout(function () {
+		var $window = this;
+		var observer = new MutationObserver(function (mutations) {
+			for (var i = 0; i < mutations.length; i++) {
+				var mutation = mutations[i];
+				if (mutation.addedNodes) {
+					for (var j = 0; j < mutation.addedNodes.length; j++) {
+						var node = mutation.addedNodes[j];
+						if (node.classList && !node.classList.contains('pxp-catalog-item-injected')) {
+							for (var k = 0; k < targetWidgets.length; k++) {
+								if (node.classList.contains('v' + targetWidgets[k])) {
+									node.classList.add('pxp-catalog-item-injected');
+									new PXPCatalogItemInjector($window, node);
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
+		});
+		
+		observer.observe($window.document, {
+			childList: true,
+			subtree: true
+		});
+	});
+
+	return {
+		type: "catalog_item_inject"
+	};
+	
+	function PXPCatalogItemInjector($window, node) {
+		var element = $window.angular.element(node);
+		var $injector = element.injector();
+		var $compile = $injector.get('$compile');
+		var i18n = $injector.get('i18n');
+		var $rootScope = $injector.get('$rootScope');
+		
+		var scope = element.scope();
+		if (scope.options.shared && scope.options.shared.pxp_options) {
+			var pxpOptions = scope.options.shared.pxp_options;
+			var g_form = $window.angular.element($window.document).find('div.form-group[field*=formModel]').first().scope().getGlideForm();
+			
+			if ('hide_title' in pxpOptions && pxpOptions.hide_title) {
+				element.find('div.panel.panel-default > h2').hide();
+			}
+			
+			if ('auto_redirect' in pxpOptions) {
+				scope.options.auto_redirect = String(pxpOptions.auto_redirect);
+			} else {
+				scope.options.auto_redirect = 'false';
+			}
+			
+			if ('fields' in pxpOptions) {
+				for (var field in pxpOptions.fields) {
+					g_form.setValue(field, pxpOptions.fields[field]);
+				}
+			}
+			
+			if (pxpOptions.afterSubmit) {
+				var unsubscribe = $rootScope.$on('$sp.sc_cat_item.submitted', function($event , $data) {
+					unsubscribe();
+					
+					var locals = {
+						$data: $data,
+						$event: $event,
+						g_form: g_form,
+						closeModal: function () {
+							scope.$parent.$parent.$dismiss();
+						}
+					};
+
+					$injector.invoke(pxpOptions.afterSubmit, scope, locals);
+				});
+				
+				scope.$on('$destroy', function () {
+					unsubscribe();
+				});
+			}
+			
+			if (pxpOptions.onLoad) {
+				var locals = {
+					g_form: g_form,
+					closeModal: function () {
+						scope.$parent.$parent.$dismiss();
+					}
+				};
+
+				$injector.invoke(pxpOptions.onLoad, scope, locals);
+			}
+		}
+	}
+})();
+]]></script>
+        <script_name>catalog_item_inject</script_name>
+        <sys_class_name>sys_ui_script</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2022-12-10 17:29:13</sys_created_on>
+        <sys_id>221dce3397271d50d545b18e6253afca</sys_id>
+        <sys_name>x_376096_bpl.catalog_item_inject</sys_name>
+        <sys_package display_value="Best Practice Library" source="x_376096_bpl">53c8084a8702111021d6fcc5dabb35d9</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Best Practice Library">53c8084a8702111021d6fcc5dabb35d9</sys_scope>
+        <sys_update_name>sys_ui_script_221dce3397271d50d545b18e6253afca</sys_update_name>
+        <ui_type>1</ui_type>
+        <use_scoped_format>true</use_scoped_format>
+    </sys_ui_script>
+</record_update>

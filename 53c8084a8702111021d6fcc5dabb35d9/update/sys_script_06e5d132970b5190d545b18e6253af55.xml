@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_script">
+    <sys_script action="INSERT_OR_UPDATE">
+        <abort_action>false</abort_action>
+        <access>package_private</access>
+        <action_delete>false</action_delete>
+        <action_insert>true</action_insert>
+        <action_query>false</action_query>
+        <action_update>true</action_update>
+        <active>false</active>
+        <add_message>false</add_message>
+        <advanced>true</advanced>
+        <change_fields>false</change_fields>
+        <client_callable>false</client_callable>
+        <collection>ecc_queue</collection>
+        <condition/>
+        <description/>
+        <execute_function>false</execute_function>
+        <filter_condition table="ecc_queue">name=BPL_ECC^queue=input^state=ready^EQ<item endquery="false" field="name" goto="false" newquery="false" operator="=" or="false" value="BPL_ECC"/>
+            <item display_value="input" endquery="false" field="queue" goto="false" newquery="false" operator="=" or="false" value="input"/>
+            <item display_value="ready" endquery="false" field="state" goto="false" newquery="false" operator="=" or="false" value="ready"/>
+            <item endquery="true" field="" goto="false" newquery="false" operator="=" or="false" value=""/>
+        </filter_condition>
+        <is_rest>false</is_rest>
+        <message/>
+        <name>BPL ECC - Callback</name>
+        <order>100</order>
+        <priority>100</priority>
+        <rest_method/>
+        <rest_method_text/>
+        <rest_service/>
+        <rest_service_text/>
+        <rest_variables/>
+        <role_conditions/>
+        <script><![CDATA[/* global current, previous */
+/* global GlideSysAttachment, XMLDocument2, GlideDateTime */
+/* eslint no-undef: "error" */
+(function executeRule(current, previous /*null when async*/) {
+
+	processEccCallback(current);
+	
+	function processEccCallback(eccGr) {
+		var xml = getEccXml(eccGr);
+		var result = xml.getNode("//output").getTextContent();
+		var callback = JSON.parse(
+			xml.getNode("//parameter[@name='__callback']").getAttribute('value')
+		);
+		
+		if (callback.script_include) {
+			var parts = callback.script_include.split('::');
+			var scriptIncludeName = parts[0];
+			var functionName = parts[1];
+			
+			if (scriptIncludeName == 'MYSCRIPTINCLUDE') {
+				var si = new MYSCRIPTINCLUDE();
+				callback.arguments.push(result);
+				
+				si[functionName].apply(si, callback.arguments);
+			}
+		}
+		
+		eccGr.processed = new GlideDateTime();
+		eccGr.update();
+	}
+	
+	function getEccXml(eccGr) {
+		if (eccGr.payload == "<see_attachment/>") {
+			var gsa = new GlideSysAttachment();
+			var attachmentGr = gsa.getAttachments(eccGr.getTableName(), eccGr.sys_id);
+			if (attachmentGr.next()) {
+				var contentStream = gsa.getContentStream(attachmentGr.sys_id);
+				return new XMLDocument2(contentStream);
+			}
+		} else {
+			var xml = new XMLDocument2();
+			xml.parseXML(eccGr.payload);
+			return xml;
+		}
+	}
+
+})(current, previous);]]></script>
+        <sys_class_name>sys_script</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2022-11-12 14:31:42</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>06e5d132970b5190d545b18e6253af55</sys_id>
+        <sys_name>BPL ECC - Callback</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="Best Practice Library" source="x_376096_bpl">53c8084a8702111021d6fcc5dabb35d9</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Best Practice Library">53c8084a8702111021d6fcc5dabb35d9</sys_scope>
+        <sys_update_name>sys_script_06e5d132970b5190d545b18e6253af55</sys_update_name>
+        <template/>
+        <when>async_always</when>
+    </sys_script>
+    <sys_translated_text action="delete_multiple" query="documentkey=06e5d132970b5190d545b18e6253af55"/>
+</record_update>

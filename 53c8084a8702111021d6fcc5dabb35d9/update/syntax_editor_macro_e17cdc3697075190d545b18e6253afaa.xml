@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="syntax_editor_macro">
+    <syntax_editor_macro action="INSERT_OR_UPDATE">
+        <comments>Use this code on the form (/sp&amp;id=form&amp;table=incident&amp;sys_id=-1) page on the Service Portal to get access to the g_form</comments>
+        <name>bpl_gform</name>
+        <sys_class_name>syntax_editor_macro</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2022-11-12 10:10:14</sys_created_on>
+        <sys_id>e17cdc3697075190d545b18e6253afaa</sys_id>
+        <sys_name>bpl_gform</sys_name>
+        <sys_package display_value="Best Practice Library" source="x_376096_bpl">53c8084a8702111021d6fcc5dabb35d9</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Best Practice Library">53c8084a8702111021d6fcc5dabb35d9</sys_scope>
+        <sys_update_name>syntax_editor_macro_e17cdc3697075190d545b18e6253afaa</sys_update_name>
+        <text>var g_form = angular.element(document).find('div[form_model]').children().last().scope().getGlideForm();</text>
+    </syntax_editor_macro>
+</record_update>

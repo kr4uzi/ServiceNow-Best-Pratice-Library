@@ -7,7 +7,7 @@
 
 }]]></client_script_v2>
         <comments/>
-        <condition>current.canWrite()</condition>
+        <condition>gs.hasRole('admin')</condition>
         <form_action>true</form_action>
         <form_button>false</form_button>
         <form_button_v2>false</form_button_v2>
@@ -17,7 +17,7 @@
         <form_style/>
         <format_for_configurable_workspace>false</format_for_configurable_workspace>
         <hint/>
-        <isolate_script>false</isolate_script>
+        <isolate_script>true</isolate_script>
         <list_action>false</list_action>
         <list_banner_button>false</list_banner_button>
         <list_button>false</list_button>
@@ -27,15 +27,33 @@
         <list_save_with_form_button>false</list_save_with_form_button>
         <list_style/>
         <messages/>
-        <name>Show on Portal</name>
-        <onclick>redirectToPortal()</onclick>
-        <order>100</order>
-        <script><![CDATA[/* global g_form, g_navigation */
-/* eslint no-undef: "error" */
-function redirectToPortal() {
-	
-	g_navigation.open('/sp?id=form&table=' + g_form.getTableName() + '&sys_id=' + g_form.getUniqueValue(), '_blank');
-	
+        <name>Background Script</name>
+        <onclick>bpl_openBackgroundScript()</onclick>
+        <order>9000</order>
+        <script><![CDATA[function bpl_openBackgroundScript() {
+	setTimeout(function () {
+		var $window = this;
+		var w = $window.open("sys.scripts.do", "Background Script", "width=1000,height=550");
+		w.addEventListener('DOMContentLoaded', function () {
+			var script = 
+				'var anyGr = new GlideRecord("' + g_form.getTableName() + '");\n'
+				+ 'anyGr.addQuery("sys_id", "' + g_form.getUniqueValue() + '");\n'
+				+ 'anyGr.setLimit(1);\n'
+				+ 'anyGr.query();\n'
+				+ 'if (anyGr.next()) {\n'
+				+ '  anyGr.field = "value";\n'
+				+ '  anyGr.setWorkflow(false);\n'
+				+ '  anyGr.update();\n'
+				+ '}';
+			
+			var cursorPos = script.indexOf('anyGr.field') + 'anyGr.'.length;
+			var scriptInput = w.document.getElementById('runscript');
+			scriptInput.value = script;
+			scriptInput.setSelectionRange(cursorPos, cursorPos);
+			
+			w.document.querySelector('select[name="sys_scope"]').value = 'global';
+		});
+	});
 }]]></script>
         <show_insert>false</show_insert>
         <show_multiple_update>false</show_multiple_update>
@@ -43,17 +61,17 @@ function redirectToPortal() {
         <show_update>true</show_update>
         <sys_class_name>sys_ui_action</sys_class_name>
         <sys_created_by>admin</sys_created_by>
-        <sys_created_on>2022-10-17 18:20:40</sys_created_on>
+        <sys_created_on>2022-11-01 13:37:42</sys_created_on>
         <sys_domain>global</sys_domain>
         <sys_domain_path>/</sys_domain_path>
-        <sys_id>fdc2942e97269110d545b18e6253af4e</sys_id>
-        <sys_name>Show on Portal</sys_name>
+        <sys_id>8da1e09797321550d545b18e6253af3d</sys_id>
+        <sys_name>Background Script</sys_name>
         <sys_overrides/>
         <sys_package display_value="Best Practice Library" source="x_376096_bpl">53c8084a8702111021d6fcc5dabb35d9</sys_package>
         <sys_policy/>
         <sys_scope display_value="Best Practice Library">53c8084a8702111021d6fcc5dabb35d9</sys_scope>
-        <sys_update_name>sys_ui_action_fdc2942e97269110d545b18e6253af4e</sys_update_name>
-        <table>x_376096_bpl_demo_table</table>
+        <sys_update_name>sys_ui_action_8da1e09797321550d545b18e6253af3d</sys_update_name>
+        <table>sys_metadata</table>
         <ui11_compatible>false</ui11_compatible>
         <ui16_compatible>false</ui16_compatible>
         <x_376096_cxp_style/>

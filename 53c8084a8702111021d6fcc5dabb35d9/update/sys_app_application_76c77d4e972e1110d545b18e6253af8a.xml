@@ -7,7 +7,7 @@
         <hint/>
         <name/>
         <order>100</order>
-        <roles>admin</roles>
+        <roles>admin,x_376096_bpl.reader</roles>
         <sys_class_name>sys_app_application</sys_class_name>
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2022-10-16 12:22:40</sys_created_on>

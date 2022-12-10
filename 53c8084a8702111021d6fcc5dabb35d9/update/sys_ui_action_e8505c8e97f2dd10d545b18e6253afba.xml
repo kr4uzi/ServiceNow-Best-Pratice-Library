@@ -7,7 +7,7 @@
 
 }]]></client_script_v2>
         <comments/>
-        <condition>current.canWrite()</condition>
+        <condition>new x_376096_bpl.MetadataUtil().shouldDisplayShowVersionUIAction(current, gs.action)</condition>
         <form_action>true</form_action>
         <form_button>false</form_button>
         <form_button_v2>false</form_button_v2>
@@ -17,7 +17,7 @@
         <form_style/>
         <format_for_configurable_workspace>false</format_for_configurable_workspace>
         <hint/>
-        <isolate_script>false</isolate_script>
+        <isolate_script>true</isolate_script>
         <list_action>false</list_action>
         <list_banner_button>false</list_banner_button>
         <list_button>false</list_button>
@@ -27,15 +27,15 @@
         <list_save_with_form_button>false</list_save_with_form_button>
         <list_style/>
         <messages/>
-        <name>Show on Portal</name>
-        <onclick>redirectToPortal()</onclick>
-        <order>100</order>
-        <script><![CDATA[/* global g_form, g_navigation */
+        <name>Show Versions</name>
+        <onclick>bpl_openRecordVersions()</onclick>
+        <order>9001</order>
+        <script><![CDATA[/* global g_scratchpad, g_navigation, g_form */
 /* eslint no-undef: "error" */
-function redirectToPortal() {
-	
-	g_navigation.open('/sp?id=form&table=' + g_form.getTableName() + '&sys_id=' + g_form.getUniqueValue(), '_blank');
-	
+function bpl_openRecordVersions() {
+	var windowName = g_form.getTableName() + '_' + g_form.getUniqueValue() + '_verions';
+	var updateName = g_scratchpad.bpl_update_name || (g_form.getTableName() + '_' + g_form.getUniqueValue());
+	g_navigation.open('nav_to.do?uri=sys_update_version_list.do%3Fsysparm_query=name%3D' + updateName, windowName);
 }]]></script>
         <show_insert>false</show_insert>
         <show_multiple_update>false</show_multiple_update>
@@ -43,17 +43,17 @@ function redirectToPortal() {
         <show_update>true</show_update>
         <sys_class_name>sys_ui_action</sys_class_name>
         <sys_created_by>admin</sys_created_by>
-        <sys_created_on>2022-10-17 18:20:40</sys_created_on>
+        <sys_created_on>2022-10-28 15:06:58</sys_created_on>
         <sys_domain>global</sys_domain>
         <sys_domain_path>/</sys_domain_path>
-        <sys_id>fdc2942e97269110d545b18e6253af4e</sys_id>
-        <sys_name>Show on Portal</sys_name>
+        <sys_id>e8505c8e97f2dd10d545b18e6253afba</sys_id>
+        <sys_name>Show Versions</sys_name>
         <sys_overrides/>
         <sys_package display_value="Best Practice Library" source="x_376096_bpl">53c8084a8702111021d6fcc5dabb35d9</sys_package>
         <sys_policy/>
         <sys_scope display_value="Best Practice Library">53c8084a8702111021d6fcc5dabb35d9</sys_scope>
-        <sys_update_name>sys_ui_action_fdc2942e97269110d545b18e6253af4e</sys_update_name>
-        <table>x_376096_bpl_demo_table</table>
+        <sys_update_name>sys_ui_action_e8505c8e97f2dd10d545b18e6253afba</sys_update_name>
+        <table>sys_metadata</table>
         <ui11_compatible>false</ui11_compatible>
         <ui16_compatible>false</ui16_compatible>
         <x_376096_cxp_style/>

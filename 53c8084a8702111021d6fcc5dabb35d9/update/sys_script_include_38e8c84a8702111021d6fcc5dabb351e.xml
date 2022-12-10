@@ -8,7 +8,7 @@
         <description/>
         <name>Integration</name>
         <script><![CDATA[/* global global, gs, sn_ws, sn_cc */
-/* global Class, GlideRecord */
+/* global Class, GlideRecord, XMLDocument2, GlideElement */
 /* eslint no-undef: "error" */
 var Integration = Class.create();
 Integration.prototype = {
@@ -17,6 +17,10 @@ Integration.prototype = {
 		this.connection_url = connectionURL;
 		
 		try {
+			// Note: If this script include executed in the context of a user that does not have access on 'https_connection',
+			//       the function will fail!
+			// As REST/SOAP calls should happend by an async fashion (note: async business rules still won't work as they execute in the users context),
+			// this is not a problem (when called e.g. by a scheduled job or by an event)
             var provider = new sn_cc.ConnectionInfoProvider();
             var connectionInfo = provider.getConnectionInfo(connectionAliasSysID);
             if (connectionInfo != null) {
@@ -125,6 +129,48 @@ Integration.prototype = {
 	_throwError: function _throwError(error) {
 		this._thrown_error = error;
 		__integration_error__with__stack__; // eslint-disable-line
+	},
+	
+	execJSProbe: function (params, callback) {
+		var eccGr = new GlideRecord("ecc_queue");
+		eccGr.newRecord();
+		
+		eccGr.topic = "JavascriptProbe";
+		eccGr.queue = "output";
+		eccGr.state = "ready";		
+		eccGr.name = "WSUtil";
+		eccGr.source = "";
+		
+		params["skip_sensor"] = true;
+		params["__callback"] = typeof callback === 'string' ? callback : JSON.stringify(callback, replacer);
+		
+		var payload = new XMLDocument2();
+		payload.createElement("parameters");
+		for (var param in params) {
+			var el = payload.createElement("parameter");
+			el.setAttribute("name", param);
+			
+			var value = params[param];
+			el.setAttribute("value", typeof value == "object" ? JSON.stringify(value, replacer) : value);
+		}		
+		
+		eccGr.payload = payload.toString();
+		
+		if (this.mid_server) {
+			eccGr.agent = "mid.server." + this.mid_server;
+		}
+		
+		return eccGr.insert();
+		
+		function replacer(key, value) {
+			if (value instanceof GlideRecord) {
+				return value.getUniqueValue();
+			} else if (value instanceof GlideElement) {
+				return value.toString();
+			}
+			
+			return value;
+		}
 	},
 
     type: 'Integration'
